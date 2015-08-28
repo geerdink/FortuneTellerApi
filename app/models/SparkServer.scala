@@ -12,3 +12,4 @@ object SparkServer {
   val spCtx = SparkContext.getOrCreate(spConf)
 
 }
+
