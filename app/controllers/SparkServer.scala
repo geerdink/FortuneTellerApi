@@ -8,11 +8,11 @@ object SparkServer extends Controller {
   def start = Action { request =>
     clearLog
     startServer
-    Ok(log)
+    Ok(Json.toJson(log))
   }
 
   def stop = Action { request =>
     stopServer
-    Ok(log)
+    Ok(Json.toJson(log))
   }
 }

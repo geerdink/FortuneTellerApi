@@ -1,11 +1,23 @@
 package models
 
 import java.io.{ByteArrayOutputStream, File, FileOutputStream}
+import java.util.Calendar
 
 import org.apache.spark.{SparkConf, SparkContext}
+import play.api.libs.json.Json
 
 object SparkServer {
-  var log = "--== LOG ==--"
+
+  case class Status(time:String, message:String)
+
+  implicit val statusWrites = Json.writes[Status]
+  implicit val statusReads = Json.reads[Status]
+
+  //var status = List(Status) //("", "", "", "Spark server initialized", "INIT"))
+ // status.log +: "--== LOG ==--"
+
+  var log = List(Status(Calendar.getInstance().getTime().toString, "Spark is initialized."))
+
   var str = new ByteArrayOutputStream()
   Console.setOut(str)
 //  Console.setOut(System.out)
@@ -18,19 +30,24 @@ object SparkServer {
   def startServer = {
     sc = SparkContext.getOrCreate(spConf)
 
-    println("Spark " + sc.version + " is running!")
-    println("App name: " + sc.appName)
-    println("Master: " + sc.master)
+   // status = status :: new Status(sc.version, sc.appName, sc.master, "Spark is running!", "START")
 
-    log = str.toString()
+    //status.log += str.toString()
+    log = log ::: List(Status(Calendar.getInstance().getTime().toString, "Spark is running!"))
+
   }
 
   def stopServer = {
     sc.stop()
-    println("Spark has stopped running!")
-    log = str.toString()
-  }
+    //println("Spark has stopped running!")
+    //status = status :: new Status(sc.version, sc.appName, sc.master, "Spark has stopped running!", "STOP")
 
+    //log = log.::("STOP")
+    log = log ::: List(Status(Calendar.getInstance().getTime().toString, "Spark has stopped running!"))
+
+
+    //status.log += str.toString()
+  }
 
 }
 
