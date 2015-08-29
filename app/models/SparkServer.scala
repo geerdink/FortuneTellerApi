@@ -1,15 +1,36 @@
 package models
 
+import java.io.{ByteArrayOutputStream, File, FileOutputStream}
+
 import org.apache.spark.{SparkConf, SparkContext}
 
-/**
- * Created by Bas on 28-8-2015.
- */
 object SparkServer {
+  var log = "--== LOG ==--"
+  var str = new ByteArrayOutputStream()
+  Console.setOut(str)
+//  Console.setOut(System.out)
 
-  val spConf = new SparkConf().setAppName("Simple Project").setMaster("local[4]")
+  val spConf = new SparkConf().setAppName("Fortune Teller API").setMaster("local[4]")
+  var sc = SparkContext.getOrCreate(spConf)
 
-  val spCtx = SparkContext.getOrCreate(spConf)
+  def clearLog = str.reset()
+
+  def startServer = {
+    sc = SparkContext.getOrCreate(spConf)
+
+    println("Spark " + sc.version + " is running!")
+    println("App name: " + sc.appName)
+    println("Master: " + sc.master)
+
+    log = str.toString()
+  }
+
+  def stopServer = {
+    sc.stop()
+    println("Spark has stopped running!")
+    log = str.toString()
+  }
+
 
 }
 

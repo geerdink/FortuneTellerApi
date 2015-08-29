@@ -1,6 +1,6 @@
 // @SOURCE:D:/Projects/FortuneTellerApi/conf/routes
-// @HASH:5236ed99017a250a62cff2bd7a2c2bbee5828232
-// @DATE:Fri Aug 28 11:55:19 CEST 2015
+// @HASH:48ef20b8fe3cedfc458625359fcad15384029472
+// @DATE:Sat Aug 29 01:56:07 CEST 2015
 
 import Routes.{prefix => _prefix, defaultPrefix => _defaultPrefix}
 import play.core._
@@ -14,10 +14,34 @@ import _root_.controllers.Assets.Asset
 import Router.queryString
 
 
+// @LINE:14
+// @LINE:13
 // @LINE:10
 // @LINE:7
 // @LINE:6
 package controllers {
+
+// @LINE:14
+// @LINE:13
+class ReverseSparkServer {
+
+
+// @LINE:14
+def stop(): Call = {
+   import ReverseRouteContext.empty
+   Call("GET", _prefix + { _defaultPrefix } + "stop")
+}
+                        
+
+// @LINE:13
+def start(): Call = {
+   import ReverseRouteContext.empty
+   Call("GET", _prefix + { _defaultPrefix } + "start")
+}
+                        
+
+}
+                          
 
 // @LINE:10
 class ReverseAssets {
@@ -58,11 +82,43 @@ def saveBook(): Call = {
                   
 
 
+// @LINE:14
+// @LINE:13
 // @LINE:10
 // @LINE:7
 // @LINE:6
 package controllers.javascript {
 import ReverseRouteContext.empty
+
+// @LINE:14
+// @LINE:13
+class ReverseSparkServer {
+
+
+// @LINE:14
+def stop : JavascriptReverseRoute = JavascriptReverseRoute(
+   "controllers.SparkServer.stop",
+   """
+      function() {
+      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "stop"})
+      }
+   """
+)
+                        
+
+// @LINE:13
+def start : JavascriptReverseRoute = JavascriptReverseRoute(
+   "controllers.SparkServer.start",
+   """
+      function() {
+      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "start"})
+      }
+   """
+)
+                        
+
+}
+              
 
 // @LINE:10
 class ReverseAssets {
@@ -115,11 +171,33 @@ def saveBook : JavascriptReverseRoute = JavascriptReverseRoute(
         
 
 
+// @LINE:14
+// @LINE:13
 // @LINE:10
 // @LINE:7
 // @LINE:6
 package controllers.ref {
 
+
+// @LINE:14
+// @LINE:13
+class ReverseSparkServer {
+
+
+// @LINE:14
+def stop(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.SparkServer.stop(), HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "stop", Seq(), "GET", """""", _prefix + """stop""")
+)
+                      
+
+// @LINE:13
+def start(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.SparkServer.start(), HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "start", Seq(), "GET", """ Starting and stopping the server""", _prefix + """start""")
+)
+                      
+
+}
+                          
 
 // @LINE:10
 class ReverseAssets {

@@ -1,6 +1,6 @@
 // @SOURCE:D:/Projects/FortuneTellerApi/conf/routes
-// @HASH:5236ed99017a250a62cff2bd7a2c2bbee5828232
-// @DATE:Fri Aug 28 11:55:19 CEST 2015
+// @HASH:48ef20b8fe3cedfc458625359fcad15384029472
+// @DATE:Sat Aug 29 01:56:07 CEST 2015
 
 
 import play.core._
@@ -51,7 +51,21 @@ private[this] lazy val controllers_Assets_versioned2_invoker = createInvoker(
 controllers.Assets.versioned(fakeValue[String], fakeValue[String]),
 HandlerDef(this.getClass.getClassLoader, "", "controllers.Assets", "versioned", Seq(classOf[String], classOf[String]),"GET", """ Map static resources from the /public folder to the /assets URL path""", Routes.prefix + """assets/$file<.+>"""))
         
-def documentation = List(("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """books""","""controllers.Application.listBooks"""),("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """books""","""controllers.Application.saveBook"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """assets/$file<.+>""","""controllers.Assets.versioned(path:String = "/public", file:String)""")).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
+
+// @LINE:13
+private[this] lazy val controllers_SparkServer_start3_route = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("start"))))
+private[this] lazy val controllers_SparkServer_start3_invoker = createInvoker(
+controllers.SparkServer.start,
+HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "start", Nil,"GET", """ Starting and stopping the server""", Routes.prefix + """start"""))
+        
+
+// @LINE:14
+private[this] lazy val controllers_SparkServer_stop4_route = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("stop"))))
+private[this] lazy val controllers_SparkServer_stop4_invoker = createInvoker(
+controllers.SparkServer.stop,
+HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "stop", Nil,"GET", """""", Routes.prefix + """stop"""))
+        
+def documentation = List(("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """books""","""controllers.Application.listBooks"""),("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """books""","""controllers.Application.saveBook"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """assets/$file<.+>""","""controllers.Assets.versioned(path:String = "/public", file:String)"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """start""","""controllers.SparkServer.start"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """stop""","""controllers.SparkServer.stop""")).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
   case r @ (_,_,_) => s :+ r.asInstanceOf[(String,String,String)]
   case l => s ++ l.asInstanceOf[List[(String,String,String)]]
 }}
@@ -79,6 +93,22 @@ case controllers_Application_saveBook1_route(params) => {
 case controllers_Assets_versioned2_route(params) => {
    call(Param[String]("path", Right("/public")), params.fromPath[String]("file", None)) { (path, file) =>
         controllers_Assets_versioned2_invoker.call(controllers.Assets.versioned(path, file))
+   }
+}
+        
+
+// @LINE:13
+case controllers_SparkServer_start3_route(params) => {
+   call { 
+        controllers_SparkServer_start3_invoker.call(controllers.SparkServer.start)
+   }
+}
+        
+
+// @LINE:14
+case controllers_SparkServer_stop4_route(params) => {
+   call { 
+        controllers_SparkServer_stop4_invoker.call(controllers.SparkServer.stop)
    }
 }
         
