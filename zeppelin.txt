@@ -1,0 +1,119 @@
+1. Load Data
+var fileName = "/home/vagrant/data/age.csv"
+var file = sc.textFile(fileName)
+
+case class WellBeing(minAge: Integer, maxAge: Integer, male:Float, female: Float, total: Float)
+
+// for (line <- lines) println(line)
+
+val wb = file
+            .map(l => l.split(","))
+            .filter(_(0) != "Age")
+            .map(l => WellBeing(
+                l(0).split("-")(0).toInt,
+                l(0).split("-")(1).toInt,
+                l(1).toFloat,
+                l(2).toFloat,
+                (l(1).toFloat + l(2).toFloat) / 2))
+
+// wb.collect().foreach(println)
+
+2. Create Data Frame
+// Zeppelin creates and injects sc (SparkContext) and sqlContext (HiveContext or SqlContext)
+// So you don't need create them manually (val sqlContext = new org.apache.spark.sql.SQLContext(sc))
+//import sqlContext.implicits._
+
+val df = wb.toDF()
+
+df.show()
+df.printSchema()
+df.select("minAge").show()
+
+df.registerTempTable("dataframe1")
+
+sqlContext.tableNames().foreach(println)
+
+val retiredPeople = sqlContext.sql("SELECT * FROM df WHERE minAge > 65")
+retiredPeople.collect().foreach(println)
+
+3. Show Simple Statistics
+import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
+import org.apache.spark.mllib.linalg.{Vector, Vectors}
+
+println(wb.count) + " records found."
+
+// create vectors
+var vectors = wb.map(x => Vectors.dense(x.minAge.toFloat, x.maxAge.toFloat, x.male, x.female, x.total))
+
+val summary = Statistics.colStats(vectors)
+
+println("mean values: " + summary.mean)
+println("variances: " + summary.variance)
+
+4. Correlations
+var corr = Statistics.corr(vectors, "pearson")
+
+println
+println("Correlations:")
+println(corr.toString(10, 1000))
+
+var vectors_old = wb.filter(_.minAge >= 50).map(x => Vectors.dense(x.minAge.toFloat, x.maxAge.toFloat, x.male, x.female, x.total))
+var corr_old = Statistics.corr(vectors_old, "pearson")
+
+println
+println("Correlations over 50:")
+println(corr_old.toString(10, 1000))
+
+var vectors_young = wb.filter(_.minAge < 50).map(x => Vectors.dense(x.minAge.toFloat, x.maxAge.toFloat, x.male, x.female, x.total))
+var corr_young = Statistics.corr(vectors_young, "pearson")
+
+println
+println("Correlations under 50:")
+println(corr_young.toString(10, 1000))
+
+5. Linear Regression
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.regression.LinearRegressionModel
+import org.apache.spark.mllib.regression.LinearRegressionWithSGD
+import org.apache.spark.mllib.linalg.Vectors
+
+// split data into two parts: before and after 50. (u-shape of data)
+// nonlinear regression is not part of Spark yet...
+
+// LabeledPoint: class that represents the features and labels of a data point. LabeledPoint(double label, Vector features)
+val data_young = wb.filter(_.minAge < 50).collect().map(line => LabeledPoint(line.minAge.toFloat, Vectors.dense(line.female, line.male, line.total)))
+val rdd_young = sc.makeRDD(data_young)
+
+val data_old = wb.filter(_.minAge >= 50).collect().map(line => LabeledPoint(line.minAge.toFloat, Vectors.dense(line.female, line.male, line.total)))
+val rdd_old = sc.makeRDD(data_old)
+
+// Build the model, linear regression with stochastic gradient descent
+val numIterations = 10000
+val stepSize = 0.01
+val model_young = LinearRegressionWithSGD.train(rdd_young, numIterations, stepSize)
+val model_old = LinearRegressionWithSGD.train(rdd_old, numIterations, stepSize)
+
+//model.save(sc, "/home/vagrant/models/linearRegressionUnder50")
+
+// Evaluate models on training examples and compute training error
+val valuesAndPreds_young = data_young.map { point =>
+  val prediction = model_young.predict(point.features)
+  (point.label, prediction)
+}
+val MSE_young = valuesAndPreds_young.map{case(v, p) => math.pow((v - p), 2)}
+
+val valuesAndPreds_old = data_old.map { point =>
+  val prediction = model_old.predict(point.features)
+  (point.label, prediction)
+}
+val MSE_old = valuesAndPreds_old.map{case(v, p) => math.pow((v - p), 2)}
+
+// MSE incidates the goodness of fit; should be smaller than 1
+println("Young training Mean Squared Error = " + (MSE_young.sum / MSE.size))
+println("Old training Mean Squared Error =   " + (MSE_old.sum / MSE.size))
+
+6. Predict
+import org.apache.spark.mllib.linalg._
+
+val v:Vector = new DenseVector(Array(30))
+model.predict(v)

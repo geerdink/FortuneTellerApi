@@ -96,4 +96,35 @@ object AgeDistribution {
   val model = DecisionTree.trainRegressor() (wb, categoricalFeaturesInfo, impurity, maxDepth, maxBins)
 
 
+  // LINEAR REGRESSION
+  import org.apache.spark.mllib.regression.LabeledPoint
+  import org.apache.spark.mllib.regression.LinearRegressionModel
+  import org.apache.spark.mllib.regression.LinearRegressionWithSGD
+  import org.apache.spark.mllib.linalg.Vectors
+  import org.apache.spark.mllib.linalg._
+
+  // split data into two parts: before and after 50. (u-shape of data)
+  // nonlinear regression is not part of Spark yet...
+
+  // LabeledPoint: class that represents the features and labels of a data point. LabeledPoint(double label, Vector features)
+  val data_young = wb.filter(_.minAge < 50).collect().map(line => LabeledPoint(line.minAge.toFloat, Vectors.dense(line.total)))
+
+  // Building the model
+  val numIterations = 100
+  val model = LinearRegressionWithSGD.train(sc.makeRDD(data_young), numIterations)
+
+  model.save(sc, "/home/vagrant/models/linearRegressionUnder50")
+
+  // Evaluate model on training examples and compute training error
+  val valuesAndPreds = data_young.map { point =>
+    val prediction = model.predict(point.features)
+    (point.label, prediction)
+  }
+  val MSE = valuesAndPreds.map{case(v, p) => math.pow((v - p), 2)}
+
+  println("training Mean Squared Error = " + (MSE.sum / MSE.size))
+
+  // make prediction
+  val v:Vector = new DenseVector(Array(24.0))
+  model.predict(v)
 }

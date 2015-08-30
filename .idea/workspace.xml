@@ -2,6 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="367ab329-f071-4a16-b8df-e55d253322c9" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/Age distribution of psychological well-being in the United States.xlsx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/SodaPop NHIS Family 2012.xlsx" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/age.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/nhisfamily.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/world life expectancy.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zeppelin.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/AgeDistribution.scala" afterPath="$PROJECT_DIR$/app/models/AgeDistribution.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -88,14 +94,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AgeDistribution.scala" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AgeDistribution.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/models/AgeDistribution.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.25569177">
-              <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding>
                 <element signature="e#16#65#0" expanded="true" />
+                <element signature="e#2933#2986#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="zeppelin.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/zeppelin.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.55341506">
+              <caret line="106" column="19" selection-start-line="106" selection-start-column="19" selection-end-line="106" selection-end-column="19" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -147,6 +164,7 @@
         <option value="$PROJECT_DIR$/app/controllers/Predictor.scala" />
         <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/app/models/AgeDistribution.scala" />
+        <option value="$PROJECT_DIR$/zeppelin.txt" />
       </list>
     </option>
   </component>
@@ -225,6 +243,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="logs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FortuneTellerApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FortuneTellerApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -643,7 +675,13 @@
       <option name="project" value="LOCAL" />
       <updated>1440887684442</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Added correlations and linear regression">
+      <created>1440931645775</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1440931645775</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TodoView">
@@ -702,11 +740,12 @@
     <MESSAGE value="Added start and stop methods for Spark server" />
     <MESSAGE value="Add logging to json" />
     <MESSAGE value="Added some first data analysis and MLlib code." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added some first data analysis and MLlib code." />
+    <MESSAGE value="Added correlations and linear regression" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added correlations and linear regression" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="3" />
+      <option name="time" value="4" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -915,11 +954,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/models/AgeDistribution.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25569177">
-          <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding>
             <element signature="e#16#65#0" expanded="true" />
+            <element signature="e#2933#2986#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/zeppelin.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.55341506">
+          <caret line="106" column="19" selection-start-line="106" selection-start-column="19" selection-end-line="106" selection-end-column="19" />
+          <folding />
         </state>
       </provider>
     </entry>
