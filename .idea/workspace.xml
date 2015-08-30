@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="367ab329-f071-4a16-b8df-e55d253322c9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/Age distribution of psychological well-being in the United States.xlsx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/SodaPop NHIS Family 2012.xlsx" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/age.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/nhisfamily.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/world life expectancy.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zeppelin.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/AgeDistribution.scala" afterPath="$PROJECT_DIR$/app/models/AgeDistribution.scala" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/urls.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="simple-rest-scala.iws" />
@@ -107,11 +101,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="zeppelin.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="zeppelin.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/zeppelin.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.55341506">
+            <state vertical-scroll-proportion="0.0">
               <caret line="106" column="19" selection-start-line="106" selection-start-column="19" selection-end-line="106" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="urls.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/data/urls.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.05954466">
+              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -165,6 +169,7 @@
         <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/app/models/AgeDistribution.scala" />
         <option value="$PROJECT_DIR$/zeppelin.txt" />
+        <option value="$PROJECT_DIR$/data/urls.txt" />
       </list>
     </option>
   </component>
@@ -681,7 +686,13 @@
       <option name="project" value="LOCAL" />
       <updated>1440931645775</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Zeppelin v1, added data.">
+      <created>1440967695287</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1440967695287</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView">
@@ -741,7 +752,8 @@
     <MESSAGE value="Add logging to json" />
     <MESSAGE value="Added some first data analysis and MLlib code." />
     <MESSAGE value="Added correlations and linear regression" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added correlations and linear regression" />
+    <MESSAGE value="Zeppelin v1, added data." />
+    <option name="LAST_COMMIT_MESSAGE" value="Zeppelin v1, added data." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -965,8 +977,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/zeppelin.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.55341506">
+        <state vertical-scroll-proportion="0.0">
           <caret line="106" column="19" selection-start-line="106" selection-start-column="19" selection-end-line="106" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/urls.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.05954466">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding />
         </state>
       </provider>
