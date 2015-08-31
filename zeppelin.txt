@@ -81,17 +81,17 @@ import org.apache.spark.mllib.linalg.Vectors
 // nonlinear regression is not part of Spark yet...
 
 // LabeledPoint: class that represents the features and labels of a data point. LabeledPoint(double label, Vector features)
-val data_young = wb.filter(_.minAge < 50).collect().map(line => LabeledPoint(line.minAge.toFloat, Vectors.dense(line.female, line.male, line.total)))
+val data_young = wb.filter(_.minAge < 50).collect().map(line => LabeledPoint(line.minAge.toFloat, Vectors.dense(line.total/10)))
 val rdd_young = sc.makeRDD(data_young)
 
-val data_old = wb.filter(_.minAge >= 50).collect().map(line => LabeledPoint(line.minAge.toFloat, Vectors.dense(line.female, line.male, line.total)))
+val data_old = wb.filter(_.minAge >= 50).collect().map(line => LabeledPoint(line.minAge.toFloat, Vectors.dense(line.total/10)))
 val rdd_old = sc.makeRDD(data_old)
 
 // Build the model, linear regression with stochastic gradient descent
-val numIterations = 10000
+val numIterations = 100
 val stepSize = 0.01
-val model_young = LinearRegressionWithSGD.train(rdd_young, numIterations, stepSize)
-val model_old = LinearRegressionWithSGD.train(rdd_old, numIterations, stepSize)
+val model_young = LinearRegressionWithSGD.train(rdd_young, numIterations) //, stepSize)
+val model_old = LinearRegressionWithSGD.train(rdd_old, numIterations) //, stepSize)
 
 //model.save(sc, "/home/vagrant/models/linearRegressionUnder50")
 
@@ -104,13 +104,14 @@ val MSE_young = valuesAndPreds_young.map{case(v, p) => math.pow((v - p), 2)}
 
 val valuesAndPreds_old = data_old.map { point =>
   val prediction = model_old.predict(point.features)
+  println("Prediction OLD: point=" + point.label + ", prediction=" + prediction)
   (point.label, prediction)
 }
 val MSE_old = valuesAndPreds_old.map{case(v, p) => math.pow((v - p), 2)}
 
 // MSE incidates the goodness of fit; should be smaller than 1
-println("Young training Mean Squared Error = " + (MSE_young.sum / MSE.size))
-println("Old training Mean Squared Error =   " + (MSE_old.sum / MSE.size))
+println("Young training Mean Squared Error = " + (MSE_young.sum / MSE_young.size))
+println("Old training Mean Squared Error =   " + (MSE_old.sum / MSE_old.size))
 
 6. Predict
 import org.apache.spark.mllib.linalg._

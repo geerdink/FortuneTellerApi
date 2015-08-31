@@ -1,2 +1,3 @@
 http://soda.pop.psu.edu/cgi-bin/broker?_SERVICE=sodapop&_PROGRAM=sodaprog.extract_function.sas&coll=nhis&ds=family2012
+ftp://ftp.cdc.gov/pub/Health_statistics/NCHs/Dataset_Documentation/NHIS/2012
 http://apps.who.int/gho/data/node.main.688?lang=en
