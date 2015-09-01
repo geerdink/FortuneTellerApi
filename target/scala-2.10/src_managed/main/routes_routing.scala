@@ -1,6 +1,6 @@
-// @SOURCE:D:/Projects/FortuneTellerApi/conf/routes
+// @SOURCE:/home/bas/projects/FortuneTellerApi/conf/routes
 // @HASH:48ef20b8fe3cedfc458625359fcad15384029472
-// @DATE:Sat Aug 29 01:56:07 CEST 2015
+// @DATE:Wed Sep 02 01:00:06 CEST 2015
 
 
 import play.core._

@@ -1,3 +1,4 @@
+/*
 package models
 
 import org.apache.spark.{SparkContext, SparkConf}
@@ -129,3 +130,5 @@ object AgeDistribution {
   val v:Vector = new DenseVector(Array(24.0))
   model.predict(v)
 }
+
+ */

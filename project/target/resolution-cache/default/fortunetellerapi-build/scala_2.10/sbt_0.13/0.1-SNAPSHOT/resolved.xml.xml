@@ -4,7 +4,7 @@
 		module="fortunetellerapi-build"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20150830002931"
+		publication="20150902005700"
 		e:scalaVersion="2.10" e:sbtVersion="0.13"
 	>
 		<description>
