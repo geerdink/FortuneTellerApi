@@ -38,6 +38,7 @@ object AgeDistribution {
 
   var df = wb.toDF()
 
+
   println(wb.count) + " records found."
 
   // create vectors
