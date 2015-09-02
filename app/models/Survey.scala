@@ -27,6 +27,6 @@ object Survey {
 
   var vectors = surveys.map(x => Vectors.dense(x.FamilySize, x.Kids, x.Education, x.Health, x.Wealth))
 
-  def addSurvey(s: Survey) = surveys = surveys ::: List(s)
+  def addSurvey(s: Survey) = surveys = surveys // ::: List(s)
 
 }

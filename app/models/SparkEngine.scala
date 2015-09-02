@@ -2,7 +2,6 @@ package models
 
 import java.io.ByteArrayOutputStream
 import java.util.Calendar
-
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.mllib.stat.Statistics
 import org.apache.spark.mllib.regression.{LinearRegressionModel, LabeledPoint, LinearRegressionWithSGD}
@@ -15,9 +14,10 @@ object SparkEngine {
   val sqlContext = new org.apache.spark.sql.SQLContext(sc)
 
   case class Status(time:String, message:String)
-
   implicit val statusWrites = Json.writes[Status]
   implicit val statusReads = Json.reads[Status]
+
+  case class Person(familySize:Integer, kids:Integer, education:Integer)
 
   var log = List(Status(Calendar.getInstance().getTime().toString, "Spark is initialized."))
 
@@ -41,7 +41,7 @@ object SparkEngine {
   var model_health:LinearRegressionModel = _
   var model_wealth:LinearRegressionModel = _
 
-  def getCorrelations = Statistics.corr(Survey.vectors, "pearson")
+  def getCorrelations = Statistics.corr(Survey.vectors, "pearson").toString()
 
   def train(saveModel:Boolean): Unit = {
     // Health
@@ -72,13 +72,13 @@ object SparkEngine {
     }
   }
 
-  def getHealthPrediction(familySize: Integer, kids: Integer, education: Integer) = {
-    val v:Vector = new DenseVector(Array(familySize.toDouble/10, kids.toDouble/10, education.toDouble/10))
+  def getHealthPrediction(person: Person) = {
+    val v:Vector = new DenseVector(Array(person.familySize.toDouble/10, person.kids.toDouble/10, person.education.toDouble/10))
     model_health.predict(v)
   }
 
-  def getWealthPrediction(familySize: Integer, kids: Integer, education: Integer) = {
-    val v:Vector = new DenseVector(Array(familySize.toDouble/10, kids.toDouble/10, education.toDouble/10))
+  def getWealthPrediction(person: Person) = {
+    val v:Vector = new DenseVector(Array(person.familySize.toDouble/10, person.kids.toDouble/10, person.education.toDouble/10))
     model_wealth.predict(v)
   }
 

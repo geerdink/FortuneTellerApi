@@ -1,24 +1,21 @@
 // @SOURCE:/home/bas/projects/FortuneTellerApi/conf/routes
-// @HASH:48ef20b8fe3cedfc458625359fcad15384029472
-// @DATE:Wed Sep 02 01:00:06 CEST 2015
+// @HASH:f8e590b4d18216989fc324f242fd7aed002cd2d6
+// @DATE:Wed Sep 02 23:09:14 CEST 2015
 
 package controllers;
 
 public class routes {
-public static final controllers.ReverseSparkServer SparkServer = new controllers.ReverseSparkServer();
-public static final controllers.ReverseAssets Assets = new controllers.ReverseAssets();
+public static final controllers.ReverseAdmin Admin = new controllers.ReverseAdmin();
 public static final controllers.ReverseApplication Application = new controllers.ReverseApplication();
 
 public static class javascript {
-public static final controllers.javascript.ReverseSparkServer SparkServer = new controllers.javascript.ReverseSparkServer();
-public static final controllers.javascript.ReverseAssets Assets = new controllers.javascript.ReverseAssets();
+public static final controllers.javascript.ReverseAdmin Admin = new controllers.javascript.ReverseAdmin();
 public static final controllers.javascript.ReverseApplication Application = new controllers.javascript.ReverseApplication();
 }
           
 
 public static class ref {
-public static final controllers.ref.ReverseSparkServer SparkServer = new controllers.ref.ReverseSparkServer();
-public static final controllers.ref.ReverseAssets Assets = new controllers.ref.ReverseAssets();
+public static final controllers.ref.ReverseAdmin Admin = new controllers.ref.ReverseAdmin();
 public static final controllers.ref.ReverseApplication Application = new controllers.ref.ReverseApplication();
 }
           

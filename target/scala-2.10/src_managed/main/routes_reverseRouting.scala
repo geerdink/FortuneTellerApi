@@ -1,6 +1,6 @@
 // @SOURCE:/home/bas/projects/FortuneTellerApi/conf/routes
-// @HASH:48ef20b8fe3cedfc458625359fcad15384029472
-// @DATE:Wed Sep 02 01:00:06 CEST 2015
+// @HASH:f8e590b4d18216989fc324f242fd7aed002cd2d6
+// @DATE:Wed Sep 02 23:09:14 CEST 2015
 
 import Routes.{prefix => _prefix, defaultPrefix => _defaultPrefix}
 import play.core._
@@ -14,26 +14,44 @@ import _root_.controllers.Assets.Asset
 import Router.queryString
 
 
+// @LINE:18
+// @LINE:17
 // @LINE:14
-// @LINE:13
+// @LINE:11
 // @LINE:10
 // @LINE:7
 // @LINE:6
 package controllers {
 
-// @LINE:14
-// @LINE:13
-class ReverseSparkServer {
+// @LINE:11
+// @LINE:10
+// @LINE:7
+// @LINE:6
+class ReverseAdmin {
 
 
-// @LINE:14
+// @LINE:10
+def getCorrelations(): Call = {
+   import ReverseRouteContext.empty
+   Call("GET", _prefix + { _defaultPrefix } + "correlations")
+}
+                        
+
+// @LINE:11
+def train(): Call = {
+   import ReverseRouteContext.empty
+   Call("GET", _prefix + { _defaultPrefix } + "train")
+}
+                        
+
+// @LINE:7
 def stop(): Call = {
    import ReverseRouteContext.empty
    Call("GET", _prefix + { _defaultPrefix } + "stop")
 }
                         
 
-// @LINE:13
+// @LINE:6
 def start(): Call = {
    import ReverseRouteContext.empty
    Call("GET", _prefix + { _defaultPrefix } + "start")
@@ -43,36 +61,30 @@ def start(): Call = {
 }
                           
 
-// @LINE:10
-class ReverseAssets {
-
-
-// @LINE:10
-def versioned(file:String): Call = {
-   implicit val _rrc = new ReverseRouteContext(Map(("path", "/public")))
-   Call("GET", _prefix + { _defaultPrefix } + "assets/" + implicitly[PathBindable[String]].unbind("file", file))
-}
-                        
-
-}
-                          
-
-// @LINE:7
-// @LINE:6
+// @LINE:18
+// @LINE:17
+// @LINE:14
 class ReverseApplication {
 
 
-// @LINE:6
-def listBooks(): Call = {
+// @LINE:14
+def addSurvey(): Call = {
    import ReverseRouteContext.empty
-   Call("GET", _prefix + { _defaultPrefix } + "books")
+   Call("POST", _prefix + { _defaultPrefix } + "survey")
 }
                         
 
-// @LINE:7
-def saveBook(): Call = {
+// @LINE:18
+def getWealthPrediction(): Call = {
    import ReverseRouteContext.empty
-   Call("POST", _prefix + { _defaultPrefix } + "books")
+   Call("GET", _prefix + { _defaultPrefix } + "prediction/wealth")
+}
+                        
+
+// @LINE:17
+def getHealthPrediction(): Call = {
+   import ReverseRouteContext.empty
+   Call("GET", _prefix + { _defaultPrefix } + "prediction/health")
 }
                         
 
@@ -82,22 +94,48 @@ def saveBook(): Call = {
                   
 
 
+// @LINE:18
+// @LINE:17
 // @LINE:14
-// @LINE:13
+// @LINE:11
 // @LINE:10
 // @LINE:7
 // @LINE:6
 package controllers.javascript {
 import ReverseRouteContext.empty
 
-// @LINE:14
-// @LINE:13
-class ReverseSparkServer {
+// @LINE:11
+// @LINE:10
+// @LINE:7
+// @LINE:6
+class ReverseAdmin {
 
 
-// @LINE:14
+// @LINE:10
+def getCorrelations : JavascriptReverseRoute = JavascriptReverseRoute(
+   "controllers.Admin.getCorrelations",
+   """
+      function() {
+      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "correlations"})
+      }
+   """
+)
+                        
+
+// @LINE:11
+def train : JavascriptReverseRoute = JavascriptReverseRoute(
+   "controllers.Admin.train",
+   """
+      function() {
+      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "train"})
+      }
+   """
+)
+                        
+
+// @LINE:7
 def stop : JavascriptReverseRoute = JavascriptReverseRoute(
-   "controllers.SparkServer.stop",
+   "controllers.Admin.stop",
    """
       function() {
       return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "stop"})
@@ -106,9 +144,9 @@ def stop : JavascriptReverseRoute = JavascriptReverseRoute(
 )
                         
 
-// @LINE:13
+// @LINE:6
 def start : JavascriptReverseRoute = JavascriptReverseRoute(
-   "controllers.SparkServer.start",
+   "controllers.Admin.start",
    """
       function() {
       return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "start"})
@@ -120,46 +158,40 @@ def start : JavascriptReverseRoute = JavascriptReverseRoute(
 }
               
 
-// @LINE:10
-class ReverseAssets {
-
-
-// @LINE:10
-def versioned : JavascriptReverseRoute = JavascriptReverseRoute(
-   "controllers.Assets.versioned",
-   """
-      function(file) {
-      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "assets/" + (""" + implicitly[PathBindable[String]].javascriptUnbind + """)("file", file)})
-      }
-   """
-)
-                        
-
-}
-              
-
-// @LINE:7
-// @LINE:6
+// @LINE:18
+// @LINE:17
+// @LINE:14
 class ReverseApplication {
 
 
-// @LINE:6
-def listBooks : JavascriptReverseRoute = JavascriptReverseRoute(
-   "controllers.Application.listBooks",
+// @LINE:14
+def addSurvey : JavascriptReverseRoute = JavascriptReverseRoute(
+   "controllers.Application.addSurvey",
    """
       function() {
-      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "books"})
+      return _wA({method:"POST", url:"""" + _prefix + { _defaultPrefix } + """" + "survey"})
       }
    """
 )
                         
 
-// @LINE:7
-def saveBook : JavascriptReverseRoute = JavascriptReverseRoute(
-   "controllers.Application.saveBook",
+// @LINE:18
+def getWealthPrediction : JavascriptReverseRoute = JavascriptReverseRoute(
+   "controllers.Application.getWealthPrediction",
    """
       function() {
-      return _wA({method:"POST", url:"""" + _prefix + { _defaultPrefix } + """" + "books"})
+      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "prediction/wealth"})
+      }
+   """
+)
+                        
+
+// @LINE:17
+def getHealthPrediction : JavascriptReverseRoute = JavascriptReverseRoute(
+   "controllers.Application.getHealthPrediction",
+   """
+      function() {
+      return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "prediction/health"})
       }
    """
 )
@@ -171,61 +203,71 @@ def saveBook : JavascriptReverseRoute = JavascriptReverseRoute(
         
 
 
+// @LINE:18
+// @LINE:17
 // @LINE:14
-// @LINE:13
+// @LINE:11
 // @LINE:10
 // @LINE:7
 // @LINE:6
 package controllers.ref {
 
 
-// @LINE:14
-// @LINE:13
-class ReverseSparkServer {
-
-
-// @LINE:14
-def stop(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
-   controllers.Admin.stop(), HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "stop", Seq(), "GET", """""", _prefix + """stop""")
-)
-                      
-
-// @LINE:13
-def start(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
-   controllers.Admin.start(), HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "start", Seq(), "GET", """ Starting and stopping the server""", _prefix + """start""")
-)
-                      
-
-}
-                          
-
+// @LINE:11
 // @LINE:10
-class ReverseAssets {
-
-
-// @LINE:10
-def versioned(path:String, file:String): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
-   controllers.Assets.versioned(path, file), HandlerDef(this.getClass.getClassLoader, "", "controllers.Assets", "versioned", Seq(classOf[String], classOf[String]), "GET", """ Map static resources from the /public folder to the /assets URL path""", _prefix + """assets/$file<.+>""")
-)
-                      
-
-}
-                          
-
 // @LINE:7
 // @LINE:6
+class ReverseAdmin {
+
+
+// @LINE:10
+def getCorrelations(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.Admin.getCorrelations(), HandlerDef(this.getClass.getClassLoader, "", "controllers.Admin", "getCorrelations", Seq(), "GET", """ Machine learning""", _prefix + """correlations""")
+)
+                      
+
+// @LINE:11
+def train(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.Admin.train(), HandlerDef(this.getClass.getClassLoader, "", "controllers.Admin", "train", Seq(), "GET", """""", _prefix + """train""")
+)
+                      
+
+// @LINE:7
+def stop(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.Admin.stop(), HandlerDef(this.getClass.getClassLoader, "", "controllers.Admin", "stop", Seq(), "GET", """""", _prefix + """stop""")
+)
+                      
+
+// @LINE:6
+def start(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.Admin.start(), HandlerDef(this.getClass.getClassLoader, "", "controllers.Admin", "start", Seq(), "GET", """ Starting and stopping the server""", _prefix + """start""")
+)
+                      
+
+}
+                          
+
+// @LINE:18
+// @LINE:17
+// @LINE:14
 class ReverseApplication {
 
 
-// @LINE:6
-def listBooks(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
-   controllers.Application.listBooks(), HandlerDef(this.getClass.getClassLoader, "", "controllers.Application", "listBooks", Seq(), "GET", """ Home page""", _prefix + """books""")
+// @LINE:14
+def addSurvey(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.Application.addSurvey(), HandlerDef(this.getClass.getClassLoader, "", "controllers.Application", "addSurvey", Seq(), "POST", """ Add data""", _prefix + """survey""")
 )
                       
 
-// @LINE:7
-def saveBook(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
-   controllers.Application.saveBook(), HandlerDef(this.getClass.getClassLoader, "", "controllers.Application", "saveBook", Seq(), "POST", """""", _prefix + """books""")
+// @LINE:18
+def getWealthPrediction(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.Application.getWealthPrediction(), HandlerDef(this.getClass.getClassLoader, "", "controllers.Application", "getWealthPrediction", Seq(), "GET", """""", _prefix + """prediction/wealth""")
+)
+                      
+
+// @LINE:17
+def getHealthPrediction(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
+   controllers.Application.getHealthPrediction(), HandlerDef(this.getClass.getClassLoader, "", "controllers.Application", "getHealthPrediction", Seq(), "GET", """ Predictions""", _prefix + """prediction/health""")
 )
                       
 

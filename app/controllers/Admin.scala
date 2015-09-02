@@ -21,7 +21,8 @@ object Admin extends Controller {
     Ok(Json.toJson(SparkEngine.getCorrelations))
   }
 
-  def train = {
-    Ok(Json.toJson(SparkEngine.train(false)))
+  def train = Action { request =>
+    SparkEngine.train(false)
+    Ok(Json.obj("status" -> "OK"))
   }
 }
