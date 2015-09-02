@@ -1,0 +1,123 @@
+1. Load data
+var fileName = "/home/vagrant/data/nhisfamily.csv"
+var file = sc.textFile(fileName)
+
+case class NHIS(FM_SIZE: Double, FM_KIDS: Double, FM_EDUC1: Double, // family education
+                FHSTATVG: Double, FHSTATEX: Double, health: Double,  // health: number of familiy members whose health is very good or excellent, divided by number of family members.
+                RAT_CAT2: Double, wealth: Double)  // wealth = ratio of family income to the poverty treshold. skip: 15,16,17,96,99
+
+val records = file.map(l => l.split(","))  // comma-separated file
+            .filter(_(0) != "RECTYPE")   // skip header
+            .filter(_(121).toInt < 16)   // skip records with undefinable, unknown or unclear poverty ratios
+            .map(l => NHIS(l(16).toDouble, l(17).toDouble, l(22).toDouble,
+                           l(40).toDouble, l(39).toDouble, (l(40).toDouble + l(39).toDouble) / l(16).toInt,
+                           l(121).toDouble, l(121).toDouble))
+
+records.count()
+records.take(10).foreach(println)
+
+2. Data Checks
+import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
+import org.apache.spark.mllib.linalg.{Vector, Vectors}
+
+println(file.count() + " lines in file")
+println(records.count() + " records found")
+records.take(10).foreach(println)
+
+val df = records.toDF()
+df.registerTempTable("dataframe1")
+
+sqlContext.sql("SELECT * FROM dataframe1 WHERE Health > 1").count()    // should be 0
+
+var vectors = records.map(x => Vectors.dense(x.FamilySize, x.Kids, x.Education, x.Health, x.Wealth))
+
+val summary = Statistics.colStats(vectors)
+println("mean values: " + summary.mean)
+println("variances: " + summary.variance)
+
+3. Visualization
+%sql
+select Wealth, count(1)
+from dataframe1
+group by Wealth
+order by Wealth
+
+%sql
+select Education, count(1)
+from dataframe1
+group by Education
+order by Education
+
+4. Correlations
+var corr = Statistics.corr(vectors, "pearson")
+
+println
+println(corr.toString(10, 1000))
+
+5. Linear Regression
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.regression.LinearRegressionModel
+import org.apache.spark.mllib.regression.LinearRegressionWithSGD
+
+// Health
+println("HEALTH predictions")
+val data_health = records.map(record => LabeledPoint(record.Health, Vectors.dense(record.FamilySize/10, record.Kids/10, record.Education/10))).collect()
+val rdd_health = sc.makeRDD(data_health)
+
+val splits_health = rdd_health.randomSplit(Array(0.8, 0.2))
+val training_health = splits_health(0).cache()
+val test_health = splits_health(1).cache()
+
+val algorithm_health = new LinearRegressionWithSGD()
+algorithm_health.setIntercept(true)
+// algorithm_health.optimizer.setNumIterations(100).setStepSize(0.1)
+val model_health = algorithm_health.run(training_health)
+
+println(model_health.intercept)
+println(model_health.weights)
+
+val prediction_health = model_health.predict(test_health.map(_.features))
+
+val predictionAndLabel_health = prediction_health.zip(test_health.map(_.label))
+predictionAndLabel_health.count()
+predictionAndLabel_health.take(20).foreach((p) => println("HEALTH prediction=" + p._1 + ", actual=" + p._2))
+
+//model_health.save(sc, "/home/bas/models/health")
+println()
+
+// Wealth
+println("WEALTH predictions")
+val data_wealth = records.map(record => LabeledPoint(record.Wealth/10, Vectors.dense(record.FamilySize/10, record.Kids/10, record.Education/10))).collect()
+val rdd_wealth = sc.makeRDD(data_wealth)
+
+val splits_wealth = rdd_wealth.randomSplit(Array(0.8, 0.2))
+val training_wealth = splits_wealth(0).cache()
+val test_wealth = splits_wealth(1).cache()
+
+val algorithm_wealth = new LinearRegressionWithSGD()
+algorithm_wealth.setIntercept(true)
+// algorithm_wealth.optimizer.setNumIterations(100).setStepSize(0.1)
+val model_wealth = algorithm_wealth.run(training_wealth)
+
+println(model_wealth.intercept)
+println(model_wealth.weights)
+
+val prediction_wealth = model_wealth.predict(test_wealth.map(_.features))
+val predictionAndLabel_wealth = prediction_wealth.zip(test_wealth.map(_.label))
+predictionAndLabel_wealth.take(20).foreach((p) => println("WEALTH prediction=" + p._1 + ", actual=" + p._2))
+
+//model_wealth.save(sc, "/home/bas/models/wealth")
+
+6. Predict
+import org.apache.spark.mllib.linalg._
+
+val v1:Vector = new DenseVector(Array(0.4, 0.2, 0.9))  // 4 people, 2 kids, master's degree
+model_health.predict(v1)
+model_wealth.predict(v1)
+
+println()
+val v2:Vector = new DenseVector(Array(0.4, 0.2, 0.2))  // 4 people, 2 kids, no high school diploma
+model_health.predict(v2)
+model_wealth.predict(v2)
+
+
