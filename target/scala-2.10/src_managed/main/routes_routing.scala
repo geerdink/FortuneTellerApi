@@ -55,14 +55,14 @@ HandlerDef(this.getClass.getClassLoader, "", "controllers.Assets", "versioned", 
 // @LINE:13
 private[this] lazy val controllers_SparkServer_start3_route = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("start"))))
 private[this] lazy val controllers_SparkServer_start3_invoker = createInvoker(
-controllers.SparkServer.start,
+controllers.Admin.start,
 HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "start", Nil,"GET", """ Starting and stopping the server""", Routes.prefix + """start"""))
         
 
 // @LINE:14
 private[this] lazy val controllers_SparkServer_stop4_route = Route("GET", PathPattern(List(StaticPart(Routes.prefix),StaticPart(Routes.defaultPrefix),StaticPart("stop"))))
 private[this] lazy val controllers_SparkServer_stop4_invoker = createInvoker(
-controllers.SparkServer.stop,
+controllers.Admin.stop,
 HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "stop", Nil,"GET", """""", Routes.prefix + """stop"""))
         
 def documentation = List(("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """books""","""controllers.Application.listBooks"""),("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """books""","""controllers.Application.saveBook"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """assets/$file<.+>""","""controllers.Assets.versioned(path:String = "/public", file:String)"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """start""","""controllers.SparkServer.start"""),("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """stop""","""controllers.SparkServer.stop""")).foldLeft(List.empty[(String,String,String)]) { (s,e) => e.asInstanceOf[Any] match {
@@ -100,7 +100,7 @@ case controllers_Assets_versioned2_route(params) => {
 // @LINE:13
 case controllers_SparkServer_start3_route(params) => {
    call { 
-        controllers_SparkServer_start3_invoker.call(controllers.SparkServer.start)
+        controllers_SparkServer_start3_invoker.call(controllers.Admin.start)
    }
 }
         
@@ -108,7 +108,7 @@ case controllers_SparkServer_start3_route(params) => {
 // @LINE:14
 case controllers_SparkServer_stop4_route(params) => {
    call { 
-        controllers_SparkServer_stop4_invoker.call(controllers.SparkServer.stop)
+        controllers_SparkServer_stop4_invoker.call(controllers.Admin.stop)
    }
 }
         

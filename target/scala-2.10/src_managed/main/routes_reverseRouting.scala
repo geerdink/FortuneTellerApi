@@ -186,13 +186,13 @@ class ReverseSparkServer {
 
 // @LINE:14
 def stop(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
-   controllers.SparkServer.stop(), HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "stop", Seq(), "GET", """""", _prefix + """stop""")
+   controllers.Admin.stop(), HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "stop", Seq(), "GET", """""", _prefix + """stop""")
 )
                       
 
 // @LINE:13
 def start(): play.api.mvc.HandlerRef[_] = new play.api.mvc.HandlerRef(
-   controllers.SparkServer.start(), HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "start", Seq(), "GET", """ Starting and stopping the server""", _prefix + """start""")
+   controllers.Admin.start(), HandlerDef(this.getClass.getClassLoader, "", "controllers.SparkServer", "start", Seq(), "GET", """ Starting and stopping the server""", _prefix + """start""")
 )
                       
 
