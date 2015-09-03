@@ -1,0 +1,358 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n# Notebook for Fortune Teller API\n## using dataset \u0027NHIS 2012\u0027",
+      "dateUpdated": "Sep 2, 2015 9:27:43 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1441222010636_-883587994",
+      "id": "20150902-212650_9764017",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch1\u003eNotebook for Fortune Teller API\u003c/h1\u003e\n\u003ch2\u003eusing dataset \u0027NHIS 2012\u0027\u003c/h2\u003e\n"
+      },
+      "dateCreated": "Sep 2, 2015 9:26:50 PM",
+      "dateStarted": "Sep 2, 2015 9:27:37 PM",
+      "dateFinished": "Sep 2, 2015 9:27:38 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "1. Load Data",
+      "text": "var fileName \u003d \"/home/bas/Data/nhisfamily.csv\"\nvar file \u003d sc.textFile(fileName)\n\ncase class NHIS(FamilySize: Double, Kids: Double, Education: Double, // family size, kids, education\n                Health: Double,  // health: number of family members whose health is very good or excellent, divided by number of family members.\n                Wealth: Double)  // wealth \u003d ratio of family income to the poverty treshold (RAT_CAT2). skip: 15,16,17,96,99\n\nval records \u003d file\n            .map(l \u003d\u003e l.split(\",\"))  // comma-separated file\n            .filter(_(0) !\u003d \"RECTYPE\")   // skip header\n            .filter(_(121).toInt \u003c 15)   // skip records with undefinable, unknown or unclear poverty ratios\n            .filter(_(22).toInt \u003c 10)    // skip people with undefinable, unknown or unclear education\n            .filter(_(16).toInt \u003c 11)    // skip families with more than 10 people\n            .filter(_(17).toInt \u003c 11)    // skip families with more than 10 kids\n            .map(l \u003d\u003e NHIS(l(16).toDouble, l(17).toDouble, l(22).toDouble,\n                           (l(40).toDouble + l(39).toDouble) / l(16).toInt,\n                           l(121).toDouble))\n                           \n",
+      "dateUpdated": "Sep 2, 2015 9:29:46 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "lineNumbers": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1441222056938_-2095300198",
+      "id": "20150902-212736_20215886",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "fileName: String \u003d /home/bas/Data/nhisfamily.csv\nfile: org.apache.spark.rdd.RDD[String] \u003d MapPartitionsRDD[1] at textFile at \u003cconsole\u003e:25\ndefined class NHIS\nrecords: org.apache.spark.rdd.RDD[NHIS] \u003d MapPartitionsRDD[8] at map at \u003cconsole\u003e:37\n"
+      },
+      "dateCreated": "Sep 2, 2015 9:27:36 PM",
+      "dateStarted": "Sep 2, 2015 9:28:31 PM",
+      "dateFinished": "Sep 2, 2015 9:29:11 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "2. Check data",
+      "text": "import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}\nimport org.apache.spark.mllib.linalg.{Vector, Vectors}\n\nprintln(file.count() + \" lines in file\")\nprintln(records.count() + \" records found\")\nrecords.take(10).foreach(println)\n\nval df \u003d records.toDF()\ndf.registerTempTable(\"dataframe1\")\n\nsqlContext.sql(\"SELECT * FROM dataframe1 WHERE Health \u003e 1\").count()    // should be 0\n\nvar vectors \u003d records.map(x \u003d\u003e Vectors.dense(x.FamilySize, x.Kids, x.Education, x.Health, x.Wealth))\n\nval summary \u003d Statistics.colStats(vectors)\nprintln(\"mean values: \" + summary.mean)\nprintln(\"variances: \" + summary.variance)\n",
+      "dateUpdated": "Sep 2, 2015 9:30:17 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "lineNumbers": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1441222111181_-1314401137",
+      "id": "20150902-212831_25947245",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}\nimport org.apache.spark.mllib.linalg.{Vector, Vectors}\n43346 lines in file\n33727 records found\nNHIS(1.0,0.0,4.0,0.0,5.0)\nNHIS(1.0,0.0,9.0,1.0,14.0)\nNHIS(2.0,0.0,5.0,0.5,14.0)\nNHIS(2.0,0.0,6.0,0.0,11.0)\nNHIS(1.0,0.0,8.0,0.0,12.0)\nNHIS(4.0,2.0,5.0,0.75,14.0)\nNHIS(1.0,0.0,4.0,0.0,4.0)\nNHIS(2.0,0.0,9.0,1.0,12.0)\nNHIS(2.0,0.0,6.0,1.0,14.0)\nNHIS(3.0,0.0,4.0,0.0,14.0)\ndf: org.apache.spark.sql.DataFrame \u003d [FamilySize: double, Kids: double, Education: double, Health: double, Wealth: double]\nres11: Long \u003d 0\nvectors: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] \u003d MapPartitionsRDD[18] at map at \u003cconsole\u003e:34\nsummary: org.apache.spark.mllib.stat.MultivariateStatisticalSummary \u003d org.apache.spark.mllib.stat.MultivariateOnlineSummarizer@1fad38b\nmean values: [2.478755892904802,0.668781688261629,5.77783378302249,0.6125450689264523,8.499036380348096]\nvariances: [2.2063253453497715,1.177221142132793,5.241188060730244,0.19167634411896978,19.05016066780408]\n"
+      },
+      "dateCreated": "Sep 2, 2015 9:28:31 PM",
+      "dateStarted": "Sep 2, 2015 9:29:31 PM",
+      "dateFinished": "Sep 2, 2015 9:29:57 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "3. Visualization",
+      "text": "%sql \nselect Wealth, count(1)\nfrom dataframe1\ngroup by Wealth\norder by Wealth",
+      "dateUpdated": "Sep 2, 2015 9:31:11 PM",
+      "config": {
+        "colWidth": 6.0,
+        "graph": {
+          "mode": "multiBarChart",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "Wealth",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "_c1",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "Wealth",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "_c1",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "lineNumbers": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1441222171854_-1336823842",
+      "id": "20150902-212931_11847531",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "Wealth\t_c1\n1.0\t2194\n2.0\t1852\n3.0\t2161\n4.0\t1960\n5.0\t1940\n6.0\t1624\n7.0\t1608\n8.0\t2722\n9.0\t2804\n10.0\t2087\n11.0\t2061\n12.0\t1703\n13.0\t1417\n14.0\t7594\n"
+      },
+      "dateCreated": "Sep 2, 2015 9:29:31 PM",
+      "dateStarted": "Sep 2, 2015 9:31:04 PM",
+      "dateFinished": "Sep 2, 2015 9:31:07 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%sql \nselect Education, count(1)\nfrom dataframe1\ngroup by Education\norder by Education",
+      "dateUpdated": "Sep 2, 2015 9:37:05 PM",
+      "config": {
+        "colWidth": 6.0,
+        "graph": {
+          "mode": "multiBarChart",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "Education",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "_c1",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "Education",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "_c1",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "lineNumbers": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1441222264581_195600378",
+      "id": "20150902-213104_30993870",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "Education\t_c1\n1.0\t1185\n2.0\t2330\n3.0\t782\n4.0\t6397\n5.0\t6852\n6.0\t2904\n7.0\t1494\n8.0\t7099\n9.0\t4684\n"
+      },
+      "dateCreated": "Sep 2, 2015 9:31:04 PM",
+      "dateStarted": "Sep 2, 2015 9:32:07 PM",
+      "dateFinished": "Sep 2, 2015 9:32:09 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "4. Correlations",
+      "text": "var corr \u003d Statistics.corr(vectors, \"pearson\")\n\nprintln\nprintln(corr.toString(10, 1000))\n\n",
+      "dateUpdated": "Sep 2, 2015 9:33:19 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "title": true,
+        "lineNumbers": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1441222327071_1259323818",
+      "id": "20150902-213207_29604117",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "corr: org.apache.spark.mllib.linalg.Matrix \u003d \n1.0                    0.841989266640225     ... (5 total)\n0.841989266640225      1.0                   ...\n0.04760185757110918    -0.03582045018180208  ...\n0.1467525960822766     0.16477652292473477   ...\n-0.034520694947600954  -0.17105734124416566  ...\n\n1.0                    0.841989266640225     0.04760185757110918   0.1467525960822766   -0.034520694947600954  \n0.841989266640225      1.0                   -0.03582045018180208  0.16477652292473477  -0.17105734124416566   \n0.04760185757110918    -0.03582045018180208  1.0                   0.2734086348282254   0.5231888240813881     \n0.1467525960822766     0.16477652292473477   0.2734086348282254    1.0                  0.23585181910799144    \n-0.034520694947600954  -0.17105734124416566  0.5231888240813881    0.23585181910799144  1.0                    \n"
+      },
+      "dateCreated": "Sep 2, 2015 9:32:07 PM",
+      "dateStarted": "Sep 2, 2015 9:32:58 PM",
+      "dateFinished": "Sep 2, 2015 9:33:03 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "5. Linear Regression",
+      "text": "import org.apache.spark.mllib.regression.LabeledPoint\nimport org.apache.spark.mllib.regression.LinearRegressionModel\nimport org.apache.spark.mllib.regression.LinearRegressionWithSGD\n\n// Health\nprintln(\"HEALTH predictions\")\nval data_health \u003d records.map(record \u003d\u003e LabeledPoint(record.Health, Vectors.dense(record.FamilySize/10, record.Kids/10, record.Education/10))).collect()\nval rdd_health \u003d sc.makeRDD(data_health)\n\nval splits_health \u003d rdd_health.randomSplit(Array(0.8, 0.2))\nval training_health \u003d splits_health(0).cache()\nval test_health \u003d splits_health(1).cache()\n\nval algorithm_health \u003d new LinearRegressionWithSGD()\nalgorithm_health.setIntercept(true)\n// algorithm_health.optimizer.setNumIterations(100).setStepSize(0.1)\nval model_health \u003d algorithm_health.run(training_health)\n\nprintln(model_health.intercept)\nprintln(model_health.weights)\n\nval prediction_health \u003d model_health.predict(test_health.map(_.features))\nval predictionAndLabel_health \u003d prediction_health.zip(test_health.map(_.label))\npredictionAndLabel_health.take(20).foreach((p) \u003d\u003e println(\"HEALTH prediction\u003d\" + p._1 + \", actual\u003d\" + p._2))\n\n//model_health.save(sc, \"/home/bas/models/health\")\nprintln()\n\n// Wealth\nprintln(\"WEALTH predictions\")\nval data_wealth \u003d records.map(record \u003d\u003e LabeledPoint(record.Wealth/10, Vectors.dense(record.FamilySize/10, record.Kids/10, record.Education/10))).collect()\nval rdd_wealth \u003d sc.makeRDD(data_wealth)\n\nval splits_wealth \u003d rdd_wealth.randomSplit(Array(0.8, 0.2))\nval training_wealth \u003d splits_wealth(0).cache()\nval test_wealth \u003d splits_wealth(1).cache()\n\nval algorithm_wealth \u003d new LinearRegressionWithSGD()\nalgorithm_wealth.setIntercept(true)\n// algorithm_wealth.optimizer.setNumIterations(100).setStepSize(0.1)\nval model_wealth \u003d algorithm_wealth.run(training_wealth)\n\nprintln(model_wealth.intercept)\nprintln(model_wealth.weights)\n\nval prediction_wealth \u003d model_wealth.predict(test_wealth.map(_.features))\nval predictionAndLabel_wealth \u003d prediction_wealth.zip(test_wealth.map(_.label))\npredictionAndLabel_wealth.take(20).foreach((p) \u003d\u003e println(\"WEALTH prediction\u003d\" + p._1 + \", actual\u003d\" + p._2))\n\n//model_wealth.save(sc, \"/home/bas/models/wealth\")\n\n",
+      "dateUpdated": "Sep 2, 2015 9:40:42 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "title": true,
+        "lineNumbers": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1441222378167_1578139450",
+      "id": "20150902-213258_22071100",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.mllib.regression.LabeledPoint\nimport org.apache.spark.mllib.regression.LinearRegressionModel\nimport org.apache.spark.mllib.regression.LinearRegressionWithSGD\nHEALTH predictions\ndata_health: Array[org.apache.spark.mllib.regression.LabeledPoint] \u003d Array((0.0,[0.1,0.0,0.4]), (1.0,[0.1,0.0,0.9]), (0.5,[0.2,0.0,0.5]), (0.0,[0.2,0.0,0.6]), (0.0,[0.1,0.0,0.8]), (0.75,[0.4,0.2,0.5]), (0.0,[0.1,0.0,0.4]), (1.0,[0.2,0.0,0.9]), (1.0,[0.2,0.0,0.6]), (0.0,[0.3,0.0,0.4]), (0.0,[0.2,0.0,0.1]), (1.0,[0.3,0.1,0.5]), (1.0,[0.2,0.0,0.5]), (1.0,[0.1,0.0,0.7]), (1.0,[0.1,0.0,0.7]), (1.0,[0.2,0.0,0.7]), (0.0,[0.1,0.0,0.8]), (0.0,[0.2,0.0,0.4]), (1.0,[0.2,0.0,0.4]), (1.0,[0.1,0.0,0.9]), (1.0,[0.1,0.0,0.5]), (0.0,[0.6,0.4,0.4]), (0.0,[0.1,0.0,0.7]), (1.0,[0.1,0.0,0.4]), (0.5,[0.2,0.0,0.9]), (0.0,[0.1,0.0,0.8]), (1.0,[0.1,0.0,0.9]), (0.0,[0.1,0.0,0.5]), (0.0,[0.1,0.0,0.1]), (1.0,[0.1,0.0,0.6]), (0.0,[0.1,0.0,0.4]), (0.6666666666666666,[0.3,0.2,0.4]), (0.0,[0.4,0.1,0.4]), (1.0,[0.3,0.2...rdd_health: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] \u003d ParallelCollectionRDD[47] at makeRDD at \u003cconsole\u003e:46\nsplits_health: Array[org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint]] \u003d Array(MapPartitionsRDD[48] at randomSplit at \u003cconsole\u003e:49, MapPartitionsRDD[49] at randomSplit at \u003cconsole\u003e:49)\ntraining_health: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] \u003d MapPartitionsRDD[48] at randomSplit at \u003cconsole\u003e:49\ntest_health: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] \u003d MapPartitionsRDD[49] at randomSplit at \u003cconsole\u003e:49\nalgorithm_health: org.apache.spark.mllib.regression.LinearRegressionWithSGD \u003d org.apache.spark.mllib.regression.LinearRegressionWithSGD@13d020d\nres40: algorithm_health.type \u003d org.apache.spark.mllib.regression.LinearRegressionWithSGD@13d020d\nmodel_health: org.apache.spark.mllib.regression.LinearRegressionModel \u003d org.apache.spark.mllib.regression.LinearRegressionModel: intercept \u003d 0.4963090830652226, numFeatures \u003d 3\n0.4963090830652226\n[0.03834285183506239,0.103855269764201,0.18803117576501782]\nprediction_health: org.apache.spark.rdd.RDD[Double] \u003d MapPartitionsRDD[253] at mapPartitions at GeneralizedLinearAlgorithm.scala:63\npredictionAndLabel_health: org.apache.spark.rdd.RDD[(Double, Double)] \u003d ZippedPartitionsRDD2[255] at zip at \u003cconsole\u003e:60\nHEALTH prediction\u003d0.6693714264372449, actual\u003d1.0\nHEALTH prediction\u003d0.6264328656345967, actual\u003d0.75\nHEALTH prediction\u003d0.5830244089217484, actual\u003d0.0\nHEALTH prediction\u003d0.5227807710087369, actual\u003d0.0\nHEALTH prediction\u003d0.5941589561312377, actual\u003d1.0\nHEALTH prediction\u003d0.5753558385547359, actual\u003d1.0\nHEALTH prediction\u003d0.5941589561312377, actual\u003d0.0\nHEALTH prediction\u003d0.5941589561312377, actual\u003d0.0\nHEALTH prediction\u003d0.5753558385547359, actual\u003d1.0\nHEALTH prediction\u003d0.5700235129050913, actual\u003d1.0\nHEALTH prediction\u003d0.5377496034017324, actual\u003d0.0\nHEALTH prediction\u003d0.6264328656345967, actual\u003d0.5\nHEALTH prediction\u003d0.5941589561312377, actual\u003d0.0\nHEALTH prediction\u003d0.6505683088607431, actual\u003d1.0\nHEALTH prediction\u003d0.6544025940442494, actual\u003d0.0\nHEALTH prediction\u003d0.6505683088607431, actual\u003d1.0\nHEALTH prediction\u003d0.5377496034017324, actual\u003d0.0\nHEALTH prediction\u003d0.5753558385547359, actual\u003d1.0\nHEALTH prediction\u003d0.6732057116207512, actual\u003d0.5\nHEALTH prediction\u003d0.6693714264372449, actual\u003d1.0\n\nWEALTH predictions\ndata_wealth: Array[org.apache.spark.mllib.regression.LabeledPoint] \u003d Array((0.5,[0.1,0.0,0.4]), (1.4,[0.1,0.0,0.9]), (1.4,[0.2,0.0,0.5]), (1.1,[0.2,0.0,0.6]), (1.2,[0.1,0.0,0.8]), (1.4,[0.4,0.2,0.5]), (0.4,[0.1,0.0,0.4]), (1.2,[0.2,0.0,0.9]), (1.4,[0.2,0.0,0.6]), (1.4,[0.3,0.0,0.4]), (0.6,[0.2,0.0,0.1]), (1.3,[0.3,0.1,0.5]), (1.1,[0.2,0.0,0.5]), (0.8,[0.1,0.0,0.7]), (0.9,[0.1,0.0,0.7]), (1.2,[0.2,0.0,0.7]), (1.4,[0.1,0.0,0.8]), (1.3,[0.2,0.0,0.4]), (1.0,[0.2,0.0,0.4]), (1.4,[0.1,0.0,0.9]), (0.8,[0.1,0.0,0.5]), (0.4,[0.6,0.4,0.4]), (1.4,[0.1,0.0,0.7]), (0.4,[0.1,0.0,0.4]), (1.4,[0.2,0.0,0.9]), (0.1,[0.1,0.0,0.8]), (1.2,[0.1,0.0,0.9]), (0.2,[0.1,0.0,0.5]), (0.3,[0.1,0.0,0.1]), (1.1,[0.1,0.0,0.6]), (0.7,[0.1,0.0,0.4]), (0.3,[0.3,0.2,0.4]), (0.1,[0.4,0.1,0.4]), (0.5,[0.3,0.2,0.5]), (1.4,[0....rdd_wealth: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] \u003d ParallelCollectionRDD[257] at makeRDD at \u003cconsole\u003e:46\nsplits_wealth: Array[org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint]] \u003d Array(MapPartitionsRDD[258] at randomSplit at \u003cconsole\u003e:49, MapPartitionsRDD[259] at randomSplit at \u003cconsole\u003e:49)\ntraining_wealth: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] \u003d MapPartitionsRDD[258] at randomSplit at \u003cconsole\u003e:49\ntest_wealth: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] \u003d MapPartitionsRDD[259] at randomSplit at \u003cconsole\u003e:49\nalgorithm_wealth: org.apache.spark.mllib.regression.LinearRegressionWithSGD \u003d org.apache.spark.mllib.regression.LinearRegressionWithSGD@69c686\nres55: algorithm_wealth.type \u003d org.apache.spark.mllib.regression.LinearRegressionWithSGD@69c686\nmodel_wealth: org.apache.spark.mllib.regression.LinearRegressionModel \u003d org.apache.spark.mllib.regression.LinearRegressionModel: intercept \u003d 0.6059594442090904, numFeatures \u003d 3\n0.6059594442090904\n[-0.0986290130001286,-0.13859494141608436,0.4987651924919375]\nprediction_wealth: org.apache.spark.rdd.RDD[Double] \u003d MapPartitionsRDD[463] at mapPartitions at GeneralizedLinearAlgorithm.scala:63\npredictionAndLabel_wealth: org.apache.spark.rdd.RDD[(Double, Double)] \u003d ZippedPartitionsRDD2[465] at zip at \u003cconsole\u003e:60\nWEALTH prediction\u003d0.7881714469717909, actual\u003d1.4\nWEALTH prediction\u003d0.7758768173058269, actual\u003d1.4\nWEALTH prediction\u003d0.7857397186058397, actual\u003d1.0\nWEALTH prediction\u003d1.0449852161518214, actual\u003d1.4\nWEALTH prediction\u003d0.9452321776534338, actual\u003d1.4\nWEALTH prediction\u003d0.9951086969026276, actual\u003d0.1\nWEALTH prediction\u003d0.89535565840424, actual\u003d1.1\nWEALTH prediction\u003d1.0351223148518085, actual\u003d1.4\nWEALTH prediction\u003d0.9951086969026276, actual\u003d0.8\nWEALTH prediction\u003d0.7956026199058526, actual\u003d0.1\nWEALTH prediction\u003d0.8454791391550464, actual\u003d1.2\nWEALTH prediction\u003d0.9951086969026276, actual\u003d1.2\nWEALTH prediction\u003d0.8854927571042273, actual\u003d1.1\nWEALTH prediction\u003d0.9852457956026148, actual\u003d0.9\nWEALTH prediction\u003d0.9951086969026276, actual\u003d1.2\nWEALTH prediction\u003d0.8118938424134121, actual\u003d1.3\nWEALTH prediction\u003d0.6459730621582713, actual\u003d0.8\nWEALTH prediction\u003d0.6958495814074651, actual\u003d0.1\nWEALTH prediction\u003d0.7620173231642184, actual\u003d0.3\nWEALTH prediction\u003d0.6385418892242096, actual\u003d0.2\n"
+      },
+      "dateCreated": "Sep 2, 2015 9:32:58 PM",
+      "dateStarted": "Sep 2, 2015 9:40:42 PM",
+      "dateFinished": "Sep 2, 2015 9:41:22 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "6. Predict",
+      "text": "import org.apache.spark.mllib.linalg._\n\nval v1:Vector \u003d new DenseVector(Array(0.4, 0.2, 0.9))  // 4 people, 2 kids, master\u0027s degree\nmodel_health.predict(v1)\nmodel_wealth.predict(v1)\n\nprintln()\nval v2:Vector \u003d new DenseVector(Array(0.4, 0.2, 0.2))  // 4 people, 2 kids, no high school diploma\nmodel_health.predict(v2)\nmodel_wealth.predict(v2)\n\n",
+      "dateUpdated": "Sep 2, 2015 9:42:57 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "lineNumbers": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1441222464595_333400137",
+      "id": "20150902-213424_15489077",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark.mllib.linalg._\nv1: org.apache.spark.mllib.linalg.Vector \u003d [0.4,0.2,0.9]\nres73: Double \u003d 0.7016453359406039\nres74: Double \u003d 0.9876775239685659\n\nv2: org.apache.spark.mllib.linalg.Vector \u003d [0.4,0.2,0.2]\nres77: Double \u003d 0.5700235129050913\nres78: Double \u003d 0.6385418892242096\n"
+      },
+      "dateCreated": "Sep 2, 2015 9:34:24 PM",
+      "dateStarted": "Sep 2, 2015 9:42:25 PM",
+      "dateFinished": "Sep 2, 2015 9:42:28 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1441222912345_-986833683",
+      "id": "20150902-214152_30335376",
+      "dateCreated": "Sep 2, 2015 9:41:52 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "FortuneTeller",
+  "id": "2B15GCNWJ",
+  "angularObjects": {
+    "2AWVJNDGH": [],
+    "2AZJNTZF1": [],
+    "2AZKFVZPY": [],
+    "2AX7BH88W": [],
+    "2AXYZ2J2E": [],
+    "2AXCU6GK3": [],
+    "2AWD8K3MY": [],
+    "2AZTJ2CPJ": [],
+    "2AXJQAQW3": [],
+    "2B17QMMVM": [],
+    "2AXKHS3EU": [],
+    "2B14TU68Z": [],
+    "2AYPJ1166": [],
+    "2AXWWPXFR": []
+  },
+  "config": {},
+  "info": {}
+}
