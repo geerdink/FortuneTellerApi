@@ -20,22 +20,23 @@ object Application extends Controller {
   }
 
   def getHealthPrediction = Action(BodyParsers.parse.json) { request =>
-    val p = request.body.validate[Seq[JsValue]]   //models.SparkEngine.Person]
+    val p = request.body.validate[models.SparkEngine.Person]
     p.fold(
       errors => BadRequest(Json.obj("status" -> "OK", "message" -> JsError.toFlatJson(errors))),
       person => {
-        val prediction = models.SparkEngine.getHealthPrediction(models.SparkEngine.Person(person(0).toString.toInt, person(1).toString.toInt, person(2).toString.toInt))  //person)
+        val prediction = models.SparkEngine.getHealthPrediction(models.SparkEngine.Person(person.familySize, person.kids, person.education))
+          //person(0).toString.toInt, person(1).toString.toInt, person(2).toString.toInt))  //person)
         Ok(Json.obj("status" -> "OK", "prediction" -> prediction))
       }
     )
   }
 
   def getWealthPrediction = Action(BodyParsers.parse.json) { request =>
-    val p = request.body.validate[Seq[JsValue]]   //models.SparkEngine.Person]
+    val p = request.body.validate[models.SparkEngine.Person]
     p.fold(
       errors => BadRequest(Json.obj("status" -> "OK", "message" -> JsError.toFlatJson(errors))),
       person => {
-        val prediction = models.SparkEngine.getWealthPrediction(models.SparkEngine.Person(person(0).toString.toInt, person(1).toString.toInt, person(2).toString.toInt))  //person)
+        val prediction = models.SparkEngine.getWealthPrediction(models.SparkEngine.Person(person.familySize, person.kids, person.education))
         Ok(Json.obj("status" -> "OK", "prediction" -> prediction))
       }
     )

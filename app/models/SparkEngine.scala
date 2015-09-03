@@ -5,7 +5,7 @@ import java.util.Calendar
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.mllib.stat.Statistics
 import org.apache.spark.mllib.regression.{LinearRegressionModel, LabeledPoint, LinearRegressionWithSGD}
-import play.api.libs.json.Json
+import play.api.libs.json._
 import org.apache.spark.mllib.linalg._
 
 object SparkEngine {
@@ -19,6 +19,22 @@ object SparkEngine {
 
   case class Person(familySize:Integer, kids:Integer, education:Integer)
 
+  object Person {
+    implicit object PersonFormat extends Format[Person] {
+      override def reads(json: JsValue): JsSuccess[Person] = JsSuccess(Person(
+        (json \ "familySize").as[String].toInt,
+        (json \ "kids").as[String].toInt,
+        (json \ "education").as[String].toInt
+      ))
+
+      override def writes(p: Person): JsValue = JsObject(Seq(
+        "familySize" -> JsNumber(p.familySize.toLong), //.toString),
+        "kids" -> JsString(p.kids.toString),
+        "education" -> JsString(p.education.toString)
+      ))
+    }
+  }
+
   var log = List(Status(Calendar.getInstance().getTime().toString, "Spark is initialized."))
 
   var str = new ByteArrayOutputStream()
@@ -28,7 +44,7 @@ object SparkEngine {
 
   def startServer = {
     spCtx = SparkContext.getOrCreate(spConf)
-    log = log ::: List(Status(Calendar.getInstance().getTime().toString, "Spark is running!"))
+    log = log ::: List(Status(Calendar.getInstance().getTime().toString, "Spark is running! Start time: " + sc.startTime))
   }
 
   def stopServer = {
@@ -83,3 +99,4 @@ object SparkEngine {
   }
 
 }
+
