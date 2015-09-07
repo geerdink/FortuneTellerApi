@@ -1,7 +1,8 @@
 Simple REST API in Play
 -----------------------
 
-Simple REST API for predicting the future.
+Simple REST API for predicting the happiness (health + wealth) of a person.
+Dataset used is NHIS 2012 Family Survey.
 
 Technology:
 - Play framework
@@ -9,13 +10,15 @@ Technology:
 
 This app is based on the TypeSafe activator template 'simple-rest-scala', see http://www.typesafe.com/activator/template/simple-rest-scala.
 
+To run app:
+activator run
 
+To debug app:
 Open Intellij IDEA
 Open project - browse your app directory
 Run - Edit Configuration
 Add new configuration - Remote
 Add name Setting transport : socket, debugger mode : attach, Host : localhost, port : 9999 module clashpath : your app
-Tools - Open Terminal
 activator -jvm-debug 9999 run
-Run debug
+Run debug in IntelliJ IDEA
 Open browser localhost:9000
